@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Live Scoreboard</title>
+  <style>
+    body {
+      background: transparent;
+      font-family: Arial, sans-serif;
+      color: white;
+      font-size: 24px;
+      padding: 10px;
+    }
+    .scoreboard {
+      display: flex;
+      gap: 20px;
+      background: rgba(0,0,0,0.6);
+      padding: 10px 20px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="scoreboard" id="scoreboard">Loading...</div>
+
+  <script>
+    const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHqImP3fKqKz2lYJdZe1q1ltP3thiTbyh4xAx2HsrXTXJVB3_g9q-x3jLoNfFC7JIfyVmrg94nOeBt/pub?gid=2121641090&single=true&output=csv';
+
+    async function fetchScore() {
+      const response = await fetch(sheetUrl);
+      const text = await response.text();
+      const rows = text.split('\n').map(row => row.split(','));
+      const [match, teamA, scoreA, teamB, scoreB, overs] = rows[1];
+
+      document.getElementById('scoreboard').innerHTML = `
+        <div><strong>${teamA}</strong>: ${scoreA}</div>
+        <div><strong>${teamB}</strong>: ${scoreB}</div>
+        <div>Overs: ${overs}</div>
+      `;
+    }
+
+    fetchScore();
+    setInterval(fetchScore, 5000); // updates every 5 seconds
+  </script>
+</body>
+</html>

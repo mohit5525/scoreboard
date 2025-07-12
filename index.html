@@ -24,15 +24,15 @@
   <div class="scoreboard" id="scoreboard">Loading...</div>
 
   <script>
-    const sheetUrl = 'https://sheetdb.io/api/v1/tt2fpgwe33h6b';
+    const sheetUrl = 'https://sheetdb.io/api/v1/tt2fpgwe33h6b'; // replace if needed
 
     async function fetchScore() {
       try {
         const response = await fetch(sheetUrl);
-        const data = await response.json();  // Use JSON instead of text
-        const row = data[0]; // Get the first row of data
+        const data = await response.json();
+        if (data.length === 0) throw new Error("No data in sheet");
+        const row = data[0];
 
-        const match = row.Match || "Match";
         const teamA = row.TeamA || "Team A";
         const scoreA = row.ScoreA || "--";
         const teamB = row.TeamB || "Team B";
@@ -51,7 +51,7 @@
     }
 
     fetchScore();
-    setInterval(fetchScore, 5000); // updates every 5 seconds
+    setInterval(fetchScore, 5000); // refresh every 5 seconds
   </script>
 </body>
 </html>

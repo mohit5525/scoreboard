@@ -1,62 +1,28 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>Cricktik Live Scoreboard</title>
-  <style>
-    body {
-      background: transparent;
-      font-family: Arial, sans-serif;
-      color: white;
-      font-size: 24px;
-      padding: 10px;
-      margin: 0;
+<script>
+  const sheetUrl = "https://sheetdb.io/api/v1/pzf938b6nu4sp"; // Replace with your actual URL
+
+  async function fetchScore() {
+    try {
+      const response = await fetch(sheetUrl);
+      const data = await response.json();
+      const row = data[0]; // get the first row
+
+      document.getElementById("scoreboard").innerHTML = `
+        <div><strong>${row.TeamA}</strong>: ${row.ScoreA}</div>
+        <div><strong>${row.TeamB}</strong>: ${row.ScoreB}</div>
+        <div>Overs: ${row.Overs}</div>
+        <div>Wickets: ${row.Wickets}</div>
+        <div>CRR: ${row.Current_Run_Rate}</div>
+      `;
+    } catch (error) {
+      console.error("Error loading score:", error);
+      document.getElementById("scoreboard").innerText = "⚠️ Error loading score";
     }
-    .scoreboard {
-      display: flex;
-      gap: 40px;
-      background: rgba(0, 0, 0, 0.7);
-      padding: 12px 24px;
-      border-radius: 12px;
-      align-items: center;
-    }
-    .team {
-      font-weight: bold;
-    }
-  </style>
-</head>
-<body>
-  <div class="scoreboard" id="scoreboard">Loading score...</div>
+  }
 
-  <script>
-    const sheetUrl = 'https://sheetdb.io/api/v1/a9foe9h9lzf7s';
+  // Fetch on load
+  fetchScore();
 
-    async function fetchScore() {
-      try {
-        const response = await fetch(sheetUrl);
-        const data = await response.json();
-        if (!data || data.length === 0) throw new Error("No data found");
-
-        const row = data[0];
-        const teamA = row.TeamA || "Team A";
-        const scoreA = row.ScoreA || "--";
-        const teamB = row.TeamB || "Team B";
-        const scoreB = row.ScoreB || "--";
-        const overs = row.Overs || "--";
-
-        document.getElementById('scoreboard').innerHTML = `
-          <div class="team">${teamA}: ${scoreA}</div>
-          <div class="team">${teamB}: ${scoreB}</div>
-          <div>Overs: ${overs}</div>
-        `;
-      } catch (error) {
-        console.error("Error loading score:", error);
-        document.getElementById('scoreboard').innerText = "Error loading score";
-      }
-    }
-
-    fetchScore();
-    setInterval(fetchScore, 5000); // update every 5 seconds
-  </script>
-</body>
-</html>
+  // Repeat every 5 seconds
+  setInterval(fetchScore, 5000);
+</script>

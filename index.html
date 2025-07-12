@@ -1,28 +1,55 @@
-<script>
-  const sheetUrl = "https://sheetdb.io/api/v1/pzf938b6nu4sp"; // Replace with your actual URL
-
-  async function fetchScore() {
-    try {
-      const response = await fetch(sheetUrl);
-      const data = await response.json();
-      const row = data[0]; // get the first row
-
-      document.getElementById("scoreboard").innerHTML = `
-        <div><strong>${row.TeamA}</strong>: ${row.ScoreA}</div>
-        <div><strong>${row.TeamB}</strong>: ${row.ScoreB}</div>
-        <div>Overs: ${row.Overs}</div>
-        <div>Wickets: ${row.Wickets}</div>
-        <div>CRR: ${row.Current_Run_Rate}</div>
-      `;
-    } catch (error) {
-      console.error("Error loading score:", error);
-      document.getElementById("scoreboard").innerText = "⚠️ Error loading score";
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Live Cricket Scoreboard</title>
+  <style>
+    body {
+      background-color: #0d1117;
+      color: #ffffff;
+      font-family: Arial, sans-serif;
+      font-size: 20px;
+      padding: 20px;
     }
-  }
+    .scoreboard {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: #161b22;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+  </style>
+</head>
+<body>
+  <div class="scoreboard" id="scoreboard">Loading score...</div>
 
-  // Fetch on load
-  fetchScore();
+  <script>
+    const sheetUrl = "https://sheetdb.io/api/v1/pzf938b6nu4sp";
 
-  // Repeat every 5 seconds
-  setInterval(fetchScore, 5000);
-</script>
+    async function fetchScore() {
+      try {
+        const response = await fetch(sheetUrl);
+        const data = await response.json();
+        const row = data[0];
+
+        document.getElementById("scoreboard").innerHTML = `
+          <div><strong>${row.TeamA}</strong>: ${row.ScoreA}</div>
+          <div><strong>${row.TeamB}</strong>: ${row.ScoreB}</div>
+          <div>Overs: ${row.Overs}</div>
+          <div>Wickets: ${row.Wickets}</div>
+          <div>Target: ${row.Target}</div>
+          <div>CRR: ${row.Current_Run_Rate}</div>
+        `;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        document.getElementById("scoreboard").innerText = "⚠️ Error loading score.";
+      }
+    }
+
+    fetchScore();
+    setInterval(fetchScore, 5000);
+  </script>
+</body>
+</html>
